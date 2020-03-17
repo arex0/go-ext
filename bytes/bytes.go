@@ -44,6 +44,32 @@ func Itoa(num, base int) []byte {
 	return Reverse(b)
 }
 
+// Utoa tansform uint to string in []byte.
+func Utoa(num, base int) []byte {
+	isNegative := false
+	// handle 0 explicitely, otherwise empty string is printed for 0
+	if num == 0 {
+		return []byte{'0'}
+	}
+
+	if num < 0 {
+		isNegative = true
+		num = -num
+	}
+	var b []byte
+	for num != 0 {
+		b = append(b, '0'+byte(num%base))
+		num /= base
+	}
+
+	// if number is negative, append '-'
+	if isNegative {
+		b = append(b, '-')
+	}
+
+	return Reverse(b)
+}
+
 // Quote mark a string.
 func Quote(b []byte, mark byte) []byte {
 	for i, j := 0, len(b); i < j; i++ {
