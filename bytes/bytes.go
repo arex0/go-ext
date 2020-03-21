@@ -2,6 +2,8 @@ package bytes
 
 import (
 	"bytes"
+	"crypto/rand"
+	hexs "encoding/hex"
 	"reflect"
 	"unicode/utf8"
 	"unsafe"
@@ -137,6 +139,28 @@ func FromStringUnsafe(s string) []byte {
 	pb.Len = ps.Len
 	pb.Cap = ps.Len
 	return b
+}
+
+// StringUnsafe return a unsafe string base on []byte
+func StringUnsafe(b []byte) string {
+	var s string
+	pb := (*reflect.SliceHeader)(unsafe.Pointer(&b))
+	ps := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	ps.Data = pb.Data
+	ps.Len = pb.Len
+	return s
+}
+
+// Random return a crypto random bytes
+func Random(length uint) []byte {
+	b := make([]byte, length)
+	rand.Read(b)
+	return b
+}
+
+// RandomHex return a crypto random hex bytes
+func RandomHex(length uint) []byte {
+	return FromStringUnsafe(hexs.EncodeToString(Random(length >> 1)))
 }
 
 // use to speed up compare []byte
